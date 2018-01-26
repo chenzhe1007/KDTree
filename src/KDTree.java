@@ -1,8 +1,12 @@
 /**
  * Created by Luke on 1/25/18.
  */
-import com.sun.tools.corba.se.idl.ValueEntry;
-import edu.princeton.cs.algs4.*;
+
+import edu.princeton.cs.algs4.Point2D;
+import edu.princeton.cs.algs4.RectHV;
+import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.Queue;
+import edu.princeton.cs.algs4.In;
 
 public class KdTree {
 
@@ -95,6 +99,7 @@ public class KdTree {
 
 
     public boolean contains(Point2D p) {
+        if (p == null) throw new IllegalArgumentException();
         Node cur = root;
         int i = 0;
         while (cur != null) {
@@ -149,11 +154,51 @@ public class KdTree {
     }
 
     public Iterable<Point2D> range(RectHV rectHV) {
-        return new Queue<Point2D>();
+        if (rectHV == null) throw new IllegalArgumentException();
+        Queue<Point2D> queue = new Queue<Point2D>();
+        rangePreOrder(queue, root, rectHV);
+        return queue;
+    }
+
+    private void rangePreOrder(Queue<Point2D> queue, Node root, RectHV rectHV) {
+        if (root == null) return;
+
+        if (!rectHV.intersects(root.rect)) {
+            return;
+        }
+
+        if (rectHV.contains(root.p)) {
+            queue.enqueue(root.p);
+        }
+        rangePreOrder(queue, root.lb, rectHV);
+        rangePreOrder(queue, root.rt, rectHV);
     }
 
     public Point2D nearest(Point2D p) {
-        return new Point2D(0.1,0.1);
+        if (p == null) throw new IllegalArgumentException();
+        return nearest(p, root);
+    }
+
+    private Point2D nearest(Point2D p, Node root) {
+        if (root == null) {
+            return null;
+        }
+
+        Point2D left = nearest(p, root.lb);
+        Point2D right = nearest(p, root.rt);
+
+        double disLeft = left == null ? Double.MAX_VALUE : left.distanceTo(p);
+        double disRight = right == null ? Double.MAX_VALUE : right.distanceTo(p);
+        double disRoot = root.p.distanceTo(p);
+
+        if (disLeft <= disRight && disLeft <= disRoot) {
+            return left;
+        } else if (disRight <= disLeft && disRight <= disRoot) {
+            return right;
+        } else {
+            return root.p;
+        }
+
     }
 
     public static void main(String[] args) {

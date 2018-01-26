@@ -1,13 +1,16 @@
 /**
  * Created by Luke on 1/25/18.
  */
-import edu.princeton.cs.algs4.*;
+import edu.princeton.cs.algs4.Point2D;
+import edu.princeton.cs.algs4.RectHV;
+import edu.princeton.cs.algs4.Queue;
+import edu.princeton.cs.algs4.In;
 
 import java.util.TreeSet;
 
 public class PointSET {
 
-    TreeSet<Point2D> set;
+    private TreeSet<Point2D> set;
     public PointSET() {
         set = new TreeSet<Point2D>();
     }
@@ -21,10 +24,11 @@ public class PointSET {
     }
 
     public void insert(Point2D p) {
+        if (p == null) throw new IllegalArgumentException();
         set.add(p);
     }
 
-    public boolean continas(Point2D p) {
+    public boolean contains(Point2D p) {
         if (p == null) throw new IllegalArgumentException();
         return set.contains(p);
     }
